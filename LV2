@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+typedef struct cvor {
+    int x;
+    struct cvor *sljedeci;
+} Node;
+
+
+Node *stvaranjeCvora(int value) {
+    Node *noviCvor = (Node *)malloc(sizeof(Node));
+    noviCvor->x = value;
+    noviCvor->sljedeci = NULL;
+    return noviCvor;
+}
+
+Node *stvaranjePopisa(int *V, int N) {
+    Node *head = stvaranjeCvora(V[0]);
+    Node *trenutni = head;
+    int i;
+    for (i = 1; i < N; i++) {
+        Node *noviCvor = stvaranjeCvora(V[i]);
+        trenutni->sljedeci = noviCvor;
+        trenutni = noviCvor;
+    }
+    return head;
+}
+
+int sekvencijalnoPretrazivanje(int *V, int N, int key) {
+    int i;
+    for (i = 0; i < N; i++) {
+        if (V[i] == key) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int sekvencijalnoPopisa(Node *head, int key) {
+    int i = 0;
+    Node *trenutni = head;
+    while (trenutni != NULL) {
+        if (trenutni->x == key) {
+            return i;
+        }
+        i++;
+        trenutni = trenutni->sljedeci;
+    }
+    return -1;
+}
+
+int main() {
+    int N;
+    int *V;
+    int key;
+    int index;
+    time_t t1, t2, t3, t4, t5, t6, t7, t8;
+
+    printf("Unesite broj elemenata niza: ");
+    scanf("%d", &N);
+
+    V = (int *)malloc(N * sizeof(int));
+
+    t1 = clock();
+    srand(time(NULL));
+    int i;
+    for (i = 0; i < N; i++) {
+        V[i] = rand() % 100;
+    }
+    t2 = clock();
+    
+    t3 = clock();
+   
+    Node *head = stvaranjePopisa(V, N);
+
+    t4 = clock();
+
+    printf("Unesite ključ koji želite pronaći: ");
+    scanf("%d", &key);
+    t5 = clock();
+    index = sekvencijalnoPretrazivanje(V, N, key);
+    t6 = clock();
+
+    if (index == -1) {
+        printf("Ključ nije pronađen u nizu.\n");
+    } else {
+        printf("Ključ %d pronađen je na indeksu %d u nizu.\n", key, index);
+    }
+
+    t7 = clock();
+    index = sekvencijalnoPopisa(head, key);
+    t8 = clock();
+    
+    if (index == -1) {
+        printf("Ključ nije pronađen u povezanom popisu.\n");
+    } else {
+        printf("Ključ %d pronađen je na indeksu %d u povezanom popisu.\n", key, index);
+    }
+    
+    printf("Vrijeme potrebno za stvaranje niza: %lf ms\n", (double)(t2 - t1) / 1000);
+    printf("Vrijeme potrebno za stvaranje povezanog popisa: %lf ms\n", (double)(t2 - t1) /  1000);
+    printf("Vrijeme potrebno za sekvencijalno pretraživanje niza: %lf ms\n", (double)(t4 - t3) /  1000);
+    printf("Vrijeme potrebno za sekvencijalno pretraživanje povezanog popisa: %lf ms\n", (double)(t6 - t5) /  1000);
+
+    free(V);
+    Node *trenutni = head;
+    while (trenutni != NULL) {
+        Node *sljedeci = trenutni->sljedeci;
+        free(trenutni);
+        trenutni = sljedeci;
+    }
+
+    return 0;
+}
