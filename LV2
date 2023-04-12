@@ -99,9 +99,9 @@ int main() {
     }
     
     printf("Vrijeme potrebno za stvaranje niza: %lf ms\n", (double)(t2 - t1) / 1000);
-    printf("Vrijeme potrebno za stvaranje povezanog popisa: %lf ms\n", (double)(t2 - t1) /  1000);
-    printf("Vrijeme potrebno za sekvencijalno pretraživanje niza: %lf ms\n", (double)(t4 - t3) /  1000);
-    printf("Vrijeme potrebno za sekvencijalno pretraživanje povezanog popisa: %lf ms\n", (double)(t6 - t5) /  1000);
+    printf("Vrijeme potrebno za stvaranje povezanog popisa: %lf ms\n", (double)(t4 - t3) /  1000);
+    printf("Vrijeme potrebno za sekvencijalno pretraživanje niza: %lf ms\n", (double)(t6 - t5) /  1000);
+    printf("Vrijeme potrebno za sekvencijalno pretraživanje povezanog popisa: %lf ms\n", (double)(t8 - t7) /  1000);
 
     free(V);
     Node *trenutni = head;
