@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int povrh(int n, int m) {
+    if (m == 0 || m == n) {
+        return 1;
+    } else {
+        return povrh(n-1, m-1) + povrh(n-1, m);
+    }
+}
+
+int povrh_stack(int n, int m) {
+    int stack[n+1][m+1];
+    for (int i = 0; i <= n; i++) {
+        for (int j = 0; j <= m; j++) {
+            if (j == 0 || j == i) {
+                stack[i][j] = 1;
+            } else {
+                stack[i][j] = stack[i-1][j-1] + stack[i-1][j];
+            }
+        }
+    }
+    return stack[n][m];
+}
+
+
+struct node {
+    int val;
+    struct node* next;
+};
+
+
+void push(struct node** head_ref, int new_val) {
+    struct node* new_node = (struct node*)malloc(sizeof(struct node));
+    new_node->val = new_val;
+    new_node->next = *head_ref;
+    *head_ref = new_node;
+}
+
+
+void free_list(struct node** head_ref) {
+    struct node* current = *head_ref;
+    struct node* next;
+
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+
+    *head_ref = NULL;
+}
+
+
+int povrh_stack_linked_list(int n, int m) {
+    struct node* head = NULL;
+    int res;
+
+    if (m == 0 || m == n) {
+        return 1;
+    } else {
+        res = povrh_stack_linked_list(n-1, m-1) + povrh_stack_linked_list(n-1, m);
+        push(&head, res); 
+        return res;
+    }
+
+    free_list(&head); 
+}
+
+int main() {
+    int n;
+    time_t t1, t2, t3, t4, t5, t6;
+    printf("Unesite n: ");
+    scanf("%d", &n);
+    int m = n/2;
+    t1 = clock();
+    int result1 = povrh(n, m);
+    t2 = clock();
+    t3 = clock();
+    int result2 = povrh_stack(n, m);
+    t4 = clock();
+    t5 = clock();
+    int result3 = povrh_stack_linked_list(n, m);
+    t6 = clock();
+    printf("Rezultat rekurzivne funkcije: %d\n", result1);
+    printf("Vrijeme potrebno za rekurziju: %lf ms\n", (double)(t2 - t1) / 1000);
+     
+    printf("Rezultat funkcije sa stogom: %d\n", result2);
+    printf("Vrijeme potrebno za stog: %lf ms\n", (double)(t4 - t3) /  1000);
+    
+    printf("Rezultat funkcije sa stogom (povezani popis): %d\n", result3);
+    printf("Vrijeme potrebno za stog (povezani popis): %lf ms\n", (double)(t6 - t5) /  1000);
+    
+    return 0;
+}
