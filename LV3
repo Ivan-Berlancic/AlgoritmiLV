@@ -10,20 +10,31 @@ int povrh(int n, int m) {
     }
 }
 
+typedef struct {
+    int n;
+    int m;
+} Param;
+
 int povrh_stack(int n, int m) {
-    int stack[n+1][m+1];
-    for (int i = 0; i <= n; i++) {
-        for (int j = 0; j <= m; j++) {
-            if (j == 0 || j == i) {
-                stack[i][j] = 1;
-            } else {
-                stack[i][j] = stack[i-1][j-1] + stack[i-1][j];
-            }
+    Param* stog = malloc(sizeof(Param) * (n + 1));
+    int top = 0;
+    stog[top++] = (Param){ n, m };
+    int result = 0;
+    while (top > 0) {
+        Param params = stog[--top];
+        n = params.n;
+        m = params.m;
+        if (m == 0 || m == n) {
+            result += 1;
+        }
+        else {
+            stog[top++] = (Param){ n - 1, m - 1 };
+            stog[top++] = (Param){ n - 1, m };
         }
     }
-    return stack[n][m];
+    free(stog);
+    return result;
 }
-
 
 struct node {
     int val;
