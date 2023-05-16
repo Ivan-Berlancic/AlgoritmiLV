@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    char data;
+    struct Node* lijevi;
+    struct Node* desni;
+};
+
+struct Node* createNode(char data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->lijevi = newNode->desni = NULL;
+    return newNode;
+}
+
+struct Node* insertNode(struct Node* root, char data) {
+    if (root == NULL) {
+        return createNode(data);
+    }
+
+    struct Node* trenutni = root;
+    struct Node* parent = NULL;
+
+    while (trenutni != NULL) {
+        parent = trenutni;
+
+        if (data < trenutni->data) {
+            trenutni = trenutni->lijevi;
+        } else if (data > trenutni->data) {
+            trenutni = trenutni->desni;
+        } else {
+            return root;
+        }
+    }
+
+    struct Node* newNode = createNode(data);
+
+    if (data < parent->data) {
+        parent->lijevi = newNode;
+    } else {
+        parent->desni = newNode;
+    }
+
+    return root;
+}
+
+void preorderObilazak(struct Node* root) {
+    if (root != NULL) {
+        printf("%c ", root->data);
+        preorderObilazak(root->lijevi);
+        preorderObilazak(root->desni);
+    }
+}
+
+void inorderObilazak(struct Node* root) {
+    if (root != NULL) {
+        inorderObilazak(root->lijevi);
+        printf("%c ", root->data);
+        inorderObilazak(root->desni);
+    }
+}
+
+void postorderObilazak(struct Node* root) {
+    if (root != NULL) {
+        postorderObilazak(root->lijevi);
+        postorderObilazak(root->desni);
+        printf("%c ", root->data);
+    }
+}
+
+void freeTree(struct Node* root) {
+    if (root != NULL) {
+        freeTree(root->lijevi);
+        freeTree(root->desni);
+        free(root);
+    }
+}
+
+int main() {
+    struct Node* root = NULL;
+    char name[100];
+    char letter;
+
+    printf("Unesite slova imena i prezimena: ");
+    
+    while ((letter = getchar()) != '\n') {
+        root = insertNode(root, letter);
+    }
+
+    printf("Preorder obilazak: ");
+    preorderObilazak(root);
+    printf("\n");
+
+    printf("Inorder obilazak: ");
+    inorderObilazak(root);
+    printf("\n");
+
+    printf("Postorder obilazak: ");
+    postorderObilazak(root);
+    printf("\n");
+
+    freeTree(root);
+
+    return 0;
+}
+
